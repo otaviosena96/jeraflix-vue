@@ -8,7 +8,8 @@ const axiosInstance = axios.create({
   },
 })
 
-const token = computed(() => {
+// Função que retorna o token atualizado
+const getToken = () => {
   try {
     const tokenString = localStorage.getItem('user_logged')
     if (!tokenString) return null
@@ -18,8 +19,20 @@ const token = computed(() => {
     console.error('Error parsing token:', error)
     return null
   }
-})
+}
 
-axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token.value}`
+// Interceptador para atualizar dinamicamente o cabeçalho de autorização com o token atualizado
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
 
 export default axiosInstance

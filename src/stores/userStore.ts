@@ -31,8 +31,8 @@ export const useUserStore = defineStore('user', () => {
 
   async function login(payload: LoginPayload) {
     const { data } = await http.post(`users/signin`, payload)
+    localStorage.setItem('user_logged', JSON.stringify(data.data))
     userLogged.value = data.data
-    localStorage.setItem('user_logged', JSON.stringify(userLogged.value))
     return data
   }
 
@@ -40,9 +40,21 @@ export const useUserStore = defineStore('user', () => {
     const { data } = await http.post(`users/signup`, payload)
     return data.data
   }
+  async function logout() {
+    await localStorage.removeItem('user_logged')
+    userLogged.value = {
+      id: 0,
+      name: '',
+      email: '',
+      token: '',
+      expires_at: new Date(),
+    }
+    window.location.reload()
+  }
   return {
     userLogged,
     login,
     signup,
+    logout,
   }
 })

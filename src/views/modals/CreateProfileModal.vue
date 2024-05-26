@@ -27,13 +27,19 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { defineProps, defineEmits, reactive } from 'vue';
+import { useProfileStore } from '../../stores/profileStore';
+import { useToast } from 'vue-toastification'
+
+const toast = useToast();
 
 const form = reactive({
   name: '',
   color: '',
 });
+
+const profileStore = useProfileStore();
 
 const props = defineProps({
   visible: {
@@ -46,7 +52,17 @@ const emits = defineEmits(['update:visible']);
 
 const createProfile = () => {
   console.log(form);
+  profileStore.create(form).then(() => {
+    toast.success("Perfil criado com sucesso!");
+  }).catch((err) => {
+    toast.error(err.response.data.message);
+  }).finally(() => {
+    form.name = '';
+    form.color = '';
+    profileStore.getProfiles();
+  });
   emits('update:visible', false);
+
 }
 
 const closeModal = () => {

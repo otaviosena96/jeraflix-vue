@@ -1,4 +1,4 @@
-<!-- src/views/ProfileList.vue -->
+
 
 <template>
   <div class="container mt-5">
@@ -20,21 +20,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import CreateProfileModal from './modals/CreateProfileModal.vue';
+import { useProfileStore } from '../stores/profileStore';
 
 const isModalVisible = ref(false);
+const profileStore = useProfileStore();
+const profiles = computed(() => profileStore.profiles);
 
-const profiles = ref([{
-  name: 'Perfil 1',
-  color: '#007ff'
-}]);
 
 const showModal = () => {
   isModalVisible.value = true;
 }
 
-onMounted(() => {
-  console.log('mounted');
+onMounted( async () => {
+  await profileStore.getProfiles();
 });
 </script>

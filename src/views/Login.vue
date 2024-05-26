@@ -40,13 +40,12 @@ const signup = async () => {
   router.push({path: '/signup'})
 }
 const login = async () => {
-  await userStore.login(form.value).then(() => {
-
-  }).then(() =>{
-    router.push('perfil/criar')
-  }).catch(e => {
-    
+  await userStore.login(form.value).then(() =>{    
+      router.push('perfil/criar');  
+  }).catch(e => {    
     toast.error(e.response.data.message)
   })
 }
+
+
 </script>

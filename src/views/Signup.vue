@@ -19,12 +19,17 @@
     </el-form-item>
     
     <el-form-item label="Data de Nascimento">
-      <el-input v-model="form.birth_date" type="date" class="mb-2"></el-input>
+      <el-input v-model="form.birth_date" type="date" class="mb-2"></el-input>      
+    </el-form-item>
+        
+    <el-form-item label="Escolha a cor do seu perfil">
+      <el-color-picker v-model="form.color" />
     </el-form-item>
     
     <el-form-item>
       <el-button @click="signup" type="submit" class="mb-2">Cadastrar</el-button>
     </el-form-item>
+    
   </el-form>
 </template>
 
@@ -42,6 +47,7 @@ const form = ref({
   password: '',
   confirmPassword: '',
   birth_date: '',
+  color: '',
 })
 
 const signup = () => {
