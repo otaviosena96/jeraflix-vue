@@ -18,7 +18,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/perfil/criar',
     name: 'Criar Perfil',
     component: CreateProfile,
-    meta: { requiresAuth: true },
   },
   // Adicione outras rotas aqui conforme necessário
 ]
@@ -29,7 +28,7 @@ const router = createRouter({
 })
 
 // Guardião de rota global
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const publicPages = ['/login', '/signup']
   const authRequired = !publicPages.includes(to.path)
   const loggedIn = localStorage.getItem('user_logged')

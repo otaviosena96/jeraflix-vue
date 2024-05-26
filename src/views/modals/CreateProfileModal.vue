@@ -41,7 +41,7 @@ const form = reactive({
 
 const profileStore = useProfileStore();
 
-const props = defineProps({
+defineProps({
   visible: {
     type: Boolean,
     default: false,

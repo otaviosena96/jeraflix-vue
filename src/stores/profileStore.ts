@@ -3,8 +3,8 @@ import http from '../services/http'
 import { ref } from 'vue'
 
 interface CreatePayload {
-  user_id: string
   name: string
+  color: string
 }
 
 interface Profile {

@@ -5,19 +5,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/userStore.ts'
 
-const showMenu = ref(false)
+
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
-const user = computed(() => userStore.userLogged)
 
-const toggleMenu = () => {
-  showMenu.value = !showMenu.value
-}
+
 
 const logout = () => {
   userStore.logout()
