@@ -1,5 +1,7 @@
 <template>
   <div class="row">
+    <SelectProfile></SelectProfile>
+    <NavBar></NavBar>
     <div v-if="isLoading" class="loading-container">
       <!-- Aqui você pode adicionar um componente de loading, como um spinner -->
       <div class="loading-spinner"></div>
@@ -48,6 +50,8 @@ import { useMovieStore } from '../stores/moviesStore';
 import { useProfileStore } from '../stores/profileStore';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification'
+import SelectProfile from '../components/SelectProfile.vue';
+import NavBar from '../components/NavBar.vue';
 
 const route = useRoute();
 

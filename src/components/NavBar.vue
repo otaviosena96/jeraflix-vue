@@ -4,23 +4,12 @@
       :default-active="activeIndex"
       mode="horizontal"
       @select="handleSelect"
-      v-if="showMenu"
-    >
-      <el-sub-menu index="1">
-        <template #title>Selecionar Perfil</template>
-        <el-menu-item
-          v-for="profile in profiles"
-          :key="profile.id"
-          :index="profile.id"
-          @click="setProfile(profile.id)"
-        >
-          {{ profile.name }}
-        </el-menu-item>
-      </el-sub-menu>
-      
-      <el-menu-item index="2">Filmes Sugeridos</el-menu-item>
-      <el-menu-item index="3">Lista de Desejos</el-menu-item>
-      <el-menu-item index="4">Filmes Assistidos</el-menu-item>
+      :ellipsis="false"
+      v-if="showMenu"      
+    >           
+      <el-menu-item index="1">Filmes Sugeridos</el-menu-item>
+      <el-menu-item index="2">Lista de Desejos</el-menu-item>
+      <el-menu-item index="3">Filmes Assistidos</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -30,8 +19,9 @@ import { ref, computed, watch } from 'vue';
 import { useUserStore } from '../stores/userStore.ts';
 import { useProfileStore } from '../stores/profileStore.ts';
 import { useMovieStore } from '../stores/moviesStore.ts';
-import router from '../router/index.ts';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const profileStore = useProfileStore();
 const movieStore = useMovieStore();
 const userStore = useUserStore();
@@ -60,13 +50,23 @@ const setProfile = (profileId) => {
     profileStore.profile = selectedProfile;
 };
 
-const handleSelect = (index) => {
+
+
+const handleSelect = (index) => { 
   
-  if (index === "2") {
-    router.push({ path: `/filmes/sugeridos/${profile.value.id}` });
+  if (index === "1") {    
+    const id = router.currentRoute.value.params.id;    
+    router.push({ path: `/filmes/sugeridos/${id}` });
   }
-  if (index === "3") {
-    router.push({ path: `/filmes/wishlist/${profile.value.id}` });
+ 
+  if (index === "2") {    
+    const id = router.currentRoute.value.params.id;    
+    router.push({ path: `/filmes/wishlist/${id}` });
+  }
+
+  if (index === "3") {    
+    const id = router.currentRoute.value.params.id;    
+    router.push({ path: `/filmes/watched/${id}` });
   }
 };
 

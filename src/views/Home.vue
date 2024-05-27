@@ -13,7 +13,7 @@
  
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
 import { useMovieStore } from '../stores/moviesStore';
 import { useProfileStore } from '../stores/profileStore';

@@ -1,5 +1,7 @@
 <template>
   <div class="row">
+    <SelectProfile></SelectProfile>
+    <NavBar></NavBar>
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
     </div>
@@ -36,14 +38,16 @@
   </div>
 </template>
 
-<script setup>
+<script  setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useMovieStore } from '../stores/moviesStore';
 import { useProfileStore } from '../stores/profileStore';
 import { userDefaultStore } from '../stores/defaultStore';
-import { text } from '@fortawesome/fontawesome-svg-core';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import NavBar from '../components/NavBar.vue';
+import SelectProfile from '../components/SelectProfile.vue';
+
 
 const route = useRoute();
 const toast = useToast();

@@ -33,7 +33,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { useUserStore } from '../stores/userStore.ts'
 import { useToast } from 'vue-toastification'

@@ -36,7 +36,7 @@ const showModal = () => {
 
 const goHome = (index: any) => {
   profileStore.profile = profileStore.profiles[index];
-  router.push('/home');
+  router.push(`/filmes/sugeridos/${profileStore.profile.id}`);
 }
 
 onMounted( async () => {
