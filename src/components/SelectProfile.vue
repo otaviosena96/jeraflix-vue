@@ -14,7 +14,7 @@ const router = useRouter()
 
 
 const goToProfile = () => {
-  router.push('/perfil/criar')
+  router.push('/home')
 }
 </script>
 

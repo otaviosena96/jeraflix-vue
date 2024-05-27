@@ -3,15 +3,14 @@
     <SelectProfile></SelectProfile>
     <NavBar></NavBar>
     <div v-if="isLoading" class="loading-container">
-      <!-- Aqui você pode adicionar um componente de loading, como um spinner -->
       <div class="loading-spinner"></div>
     </div>
-    <div v-else class="col-md-12 teste">
-      <el-card v-for="(movie, index) in movies.movies" :key="index" class="card-movie">
+    <div class="col-md-12 teste">
+      <el-card v-for="(movie, index) in watched.wishlist" :key="index" class="card-movie">
         <el-tooltip effect="dark" :content="movie.title" placement="top">
           <span class="movie-name">{{ truncate(movie.title, 25) }}</span>
         </el-tooltip>
-        <span class="genre">{{ movie.genre }}</span>
+        <span class="genre">{{ movie.genre.name }}</span>
         <div class="actions">
           <div class="mb-2">
             <el-tooltip effect="dark" :content="movie.overview" placement="top">
@@ -19,12 +18,12 @@
             </el-tooltip>
           </div>
           <div class="button-container">
-            <el-button v-if="!movie.favorite" @click="addToFavorites(index)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
-            <el-button v-else type="danger" class="button remove-button" style="background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER FAVORITO -</el-button>
+            <el-button v-if="!movie.favorite" @click="addToFavorites(movie)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
+            <el-button v-else @click="removeFromFavorites(movie)" type="danger" class="button remove-button" style="background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER FAVORITO -</el-button>
           </div>
           <div class="button-container">
             <el-button v-if="!movie.watched" @click="addToWatched(index)" type="success" class="button" style="margin-top: 1rem; text-align: center; padding: 0.5rem;">JÁ ASSISTI +</el-button>
-            <el-button v-else type="danger" class="button remove-button" style="margin-top: 1rem; background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER ASSISTIDO -</el-button>
+            <el-button v-else @click="removeFromWatched(movie)" type="danger" class="button remove-button" style="margin-top: 1rem; background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER ASSISTIDO -</el-button>
           </div>
         </div>
       </el-card>
@@ -32,10 +31,10 @@
       <div class="pagination-container">
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="page"
         :page-size="pageSize"
         layout="total, prev, pager, next"
-        :total="movies.total_results"   
+        :total="watched.totalCount"
       />
     </div>
     </div>
@@ -44,111 +43,137 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script  setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useMovieStore } from '../stores/moviesStore';
 import { useProfileStore } from '../stores/profileStore';
+import { userDefaultStore } from '../stores/defaultStore';
 import { useRoute } from 'vue-router';
-import { useToast } from 'vue-toastification'
-import SelectProfile from '../components/SelectProfile.vue';
+import { useToast } from 'vue-toastification';
 import NavBar from '../components/NavBar.vue';
+import SelectProfile from '../components/SelectProfile.vue';
+
 
 const route = useRoute();
-
-
+const toast = useToast();
+const isLoading = ref(false);
+const page = ref(1)
+const pageSize = ref(20);
 const storeProfile = useProfileStore();
 const storeMovie = useMovieStore();
-const isLoading = ref(false);
-const toast = useToast()
-const movies = computed(() => storeMovie.movies)
+const storeDefault = userDefaultStore();
+const watched = computed(() => storeMovie.watched)
 
-
-const currentPage = ref(1);
-const pageSize = ref(20);
 const profileId = route.params.id;
 
-const handleCurrentChange = (val: number) => {
-  currentPage.value = val;
-  fetchMovies();
+const handleCurrentChange = (val) => {
+  page.value = val;
 };
 
-const truncate = (text: string, length: number) => {
+// Função para truncar o nome do filme se for muito longo
+const truncate = (text, length) => {
   if (text.length > length) {
     return text.slice(0, length) + '...';
   }
   return text;
 };
 
-const addToFavorites = (index: number) => {
-    const movie = movies.value.movies[index];
+const addToFavorites = (movie) => {
+    isLoading.value = true;
     const payload = {
-      tmdbId: movie.id,
-      genre_id: movie.genre_ids[0],
-      profile_id: profileId, 
-      favorite: true,     
-      title: movie.title, 
+      tmdbId: movie.tmdbId,
+      profile_id: profileId,  
+      title: movie.title,
       overview: movie.overview,  
-    }
+      genre_id: movie.genre_id,
+      favorite: true,
+    } 
+
     storeMovie.addToFavorite(payload).then(() => {
-      toast.success('Filme adicionado aos favoritos com sucesso!', );
-    }).catch(() => {
-      toast.error('Erro ao adicionar filme aos favoritos. Por favor, tente novamente mais tarde.');
-    }).finally(() => {
-      fetchMovies();
-    })
-  
-};
-
-const addToWatched = (index: number) => {
-  const movie = movies.value.movies[index];
-    const payload = {
-      tmdbId: movie.id,
-      genre_id: movie.genre_ids[0],
-      profile_id: profileId, 
-      watched: true,     
-      title: movie.title, 
-      overview: movie.overview,  
-    }
-    storeMovie.addToWatched(payload).then(() => {
-      toast.success('Filme adicionado aos favoritos com sucesso!', );
-    }).catch(() => {
-      toast.error('Erro ao adicionar filme aos assistidos. Por favor, tente novamente mais tarde.');
-    }).finally(() => {
-      fetchMovies();
-    })
-};
-
-
-const fetchMovies = () => {
-  isLoading.value = true;
-  const payload = {
-    profile_id: profileId,
-    page: currentPage.value,    
-  };
-  storeMovie.suggestedMovieWithoutGenre(payload)
-    .then(() => {     
-      if (isLoading.value === true) {
-        isLoading.value = false;
-       
-      }
-    })
-    .catch((error) => {
-      // Se houver um erro na requisição, trata-o aqui
-      console.error('Erro ao buscar filmes:', error);
       isLoading.value = false;
-      toast.error('Erro ao buscar filmes. Por favor, tente novamente mais tarde.');
+    }).catch((error) => {
+      isLoading.value = false;
+      toast("Erro!");
+    }).finally(() => {
+      getWatched();
     });
 };
 
+const removeFromFavorites = (movie) => {
+    isLoading.value = true;
+    const payload = {
+      tmdbId: movie.tmdbId,
+      profile_id: profileId,  
+      title: movie.title,
+      overview: movie.overview,  
+      genre_id: movie.genre_id,
+      favorite: false,
+    } 
+    storeMovie.addToFavorite(payload).then(() => {
+      isLoading.value = false;
+    }).catch((error) => {
+      isLoading.value = false;
+      toast("Erro!");
+    }).finally(() => {
+      getWatched();
+    });
+  }
 
-onMounted(() => {  
+
+  const removeFromWatched = (movie) => {
+    isLoading.value = true;
+    const payload = {
+      tmdbId: movie.tmdbId,
+      profile_id: profileId,  
+      title: movie.title,
+      overview: movie.overview,  
+      genre_id: movie.genre_id,
+      watched: false,
+    } 
+    storeMovie.addToWatched(payload).then(() => {
+      isLoading.value = false;
+    }).catch((error) => {
+      isLoading.value = false;
+      toast("Erro!");
+    }).finally(() => {
+      getWatched();
+    });
+  }
+
+  
+
+
+
+const getWatched = async () => {  
+  isLoading.value = true; // Ativar o loading
+ 
+  try {
+    const payload = {
+      profile_id: profileId,
+      page: page.value
+    };
+    await storeMovie.getWatched(payload);
+    toast.success('Filmes carregados com sucesso!');
+  } catch (error) {
+    console.error('Erro ao buscar filmes:', error);
+    toast({
+      title: 'Erro!',
+      message: 'Erro ao buscar filmes. Por favor, tente novamente mais tarde.',
+      type: 'error',
+      duration: 5000 // Duração da notificação em milissegundos
+    });
+  } finally {
+    isLoading.value = false; // Desativar o loading
+  }
+}
+
+
+onMounted(() => {
   storeProfile.getProfiles();
-  fetchMovies();
+  getWatched(profileId);
 });
 
-watch([currentPage, pageSize], fetchMovies);
-
-
+watch([page], getWatched);
 </script>
 
 
@@ -223,6 +248,7 @@ watch([currentPage, pageSize], fetchMovies);
   background-color: white; /* Adicione um fundo para a paginação, se necessário */
   padding: 0.5rem 1rem; /* Adicione algum espaçamento interno para a paginação */
 }
+
 
 .loading-container {
     display: flex;

@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
-import CreateProfile from '../views/CreateProfile.vue'
 import Home from '../views/Home.vue'
 import MoviesSuggested from '../views/MoviesSuggested.vue'
 import Wishlist from '../views/Wishlist.vue'
+import Watched from '../views/Watched.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,11 +16,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/signup',
     name: 'Signup',
     component: Signup,
-  },
-  {
-    path: '/perfil/criar',
-    name: 'Criar Perfil',
-    component: CreateProfile,
   },
   {
     path: '/home',
@@ -36,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/filmes/wishlist/:id',
     name: 'Lista de Desejos',
     component: Wishlist,
+  },
+  {
+    path: '/filmes/watched/:id',
+    name: 'Lista de Assistidos',
+    component: Watched,
   },
 ]
 

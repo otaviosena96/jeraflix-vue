@@ -15,6 +15,7 @@ export const useMovieStore = defineStore('movie', () => {
     total_results: 0,
   })
   const wishlist = ref<any[]>([])
+  const watched = ref<any[]>([])
 
   async function suggestedMovieWithoutGenre(payload: any) {
     const { data } = await http.get(`movies/search-movies-suggested`, {
@@ -25,7 +26,11 @@ export const useMovieStore = defineStore('movie', () => {
   }
 
   async function addToFavorite(payload: any) {
-    const { data } = await http.post(`movies/add-to-favorite`, payload)
+    const { data } = await http.post(`movies/toogle-favorite`, payload)
+    return data
+  }
+  async function addToWatched(payload: any) {
+    const { data } = await http.post(`movies/toogle-watched`, payload)
     return data
   }
 
@@ -36,12 +41,22 @@ export const useMovieStore = defineStore('movie', () => {
     wishlist.value = data.data
     return data
   }
+  async function getWatched(payload: any) {
+    const { data } = await http.get(`movies/watched/`, {
+      params: payload,
+    })
+    watched.value = data.data
+    return data
+  }
 
   return {
     movies,
     wishlist,
+    watched,
     suggestedMovieWithoutGenre,
     addToFavorite,
     getWishlist,
+    getWatched,
+    addToWatched,
   }
 })

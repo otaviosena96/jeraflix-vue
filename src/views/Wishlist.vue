@@ -10,15 +10,20 @@
         <el-tooltip effect="dark" :content="movie.title" placement="top">
           <span class="movie-name">{{ truncate(movie.title, 25) }}</span>
         </el-tooltip>
-        <span class="genre">{{ movie.genre }}</span>
+        <span class="genre">{{ movie.genre.name }}</span>
         <div class="actions">
-          <div class="button-container">
-            <el-button v-if="!movie.favorite" @click="addToFavorites(index)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
-            <el-button v-else @click="removeFromFavorites(index)" type="danger" class="button remove-button" style="background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER FAVORITO -</el-button>
+          <div class="mb-2">
+            <el-tooltip effect="dark" :content="movie.overview" placement="top">
+            <span class="pointer">SINOPSE</span>
+            </el-tooltip>
           </div>
           <div class="button-container">
-            <el-button v-if="!movie.watched" @click="addToWatched(index)" type="success" class="button" style="margin-top: 1rem; text-align: center; padding: 0.5rem;">JÁ ASSISTI +</el-button>
-            <el-button v-else @click="removeFromWatched(index)" type="danger" class="button remove-button" style="margin-top: 1rem; background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER ASSISTIDO -</el-button>
+            <el-button v-if="!movie.favorite" @click="addToFavorites(index)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
+            <el-button v-else @click="removeFromFavorites(movie)" type="danger" class="button remove-button" style="background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER FAVORITO -</el-button>
+          </div>
+          <div class="button-container">
+            <el-button v-if="!movie.watched" @click="addToWatched(movie)" type="success" class="button" style="margin-top: 1rem; text-align: center; padding: 0.5rem;">JÁ ASSISTI +</el-button>
+            <el-button v-else @click="removeFromWatched(movie)" type="danger" class="button remove-button" style="margin-top: 1rem; background-color:#F17878; text-align: center; padding: 0.5rem;">REMOVER ASSISTIDO -</el-button>
           </div>
         </div>
       </el-card>
@@ -67,7 +72,6 @@ const handleCurrentChange = (val) => {
   page.value = val;
 };
 
-// Função para truncar o nome do filme se for muito longo
 const truncate = (text, length) => {
   if (text.length > length) {
     return text.slice(0, length) + '...';
@@ -75,30 +79,67 @@ const truncate = (text, length) => {
   return text;
 };
 
-const addToFavorites = (index) => {
-    const movie = movies.value[index];
+const addToWatched = (movie) => {    
+    isLoading.value = true;
     const payload = {
-      tmdbId: movie.id,
-      profile_id: profile.value.id       
+      tmdbId: movie.tmdbId,
+      profile_id: profileId, 
+      title: movie.title,
+      overview: movie.overview,  
+      genre_id: movie.genre_id,
+      watched: true,      
     }
-
-    storeMovie.addToFavorite(payload);
+    storeMovie.addToWatched(payload)
+    .catch((error) => {
+      toast("Erro!");
+    }).finally(() => {
+      isLoading.value = false;
+      getWishlist();
+    });
+};
+const removeFromWatched = (movie) => {    
+    const payload = {
+      tmdbId: movie.tmdbId,
+      profile_id: profileId, 
+      title: movie.title,
+      overview: movie.overview,  
+      genre_id: movie.genre_id,
+      watched: false,      
+    }
+    storeMovie.addToWatched(payload)
+    .catch((error) => {
+      toast("Erro!");
+    }).finally(() => {
+      isLoading.value = false;
+      getWishlist();
+    });
 };
 
-const addToWatched = (index) => {
-  // Implemente a lógica para adicionar o filme à lista de já assistidos
+const removeFromFavorites = (movie) => {
+  isLoading.value = true;
+  const payload = {
+      tmdbId: movie.tmdbId,
+      profile_id: profileId, 
+      title: movie.title,
+      overview: movie.overview,  
+      genre_id: movie.genre_id,
+      favorite: false,      
+    }
+    storeMovie.addToFavorite(payload)
+    .catch((error) => {
+      toast("Erro!");
+    }).finally(() => {
+      isLoading.value = false;
+      getWishlist();
+
+    });
 };
 
 const profileId = route.params.id;
 
-const getWishlist = async () => {
-  if(profileId == 0) {
-    storeMovie.wishlist.value = [];
-    toast.warning('Selecione um perfil para visualizar a lista de desejos.');
-    return;
-  }
-  isLoading.value = true; // Ativar o loading
-  console.log(profileId)
+const getWishlist = async () => {  
+  isLoading.value = true;
+  
   try {
     const payload = {
       profile_id: profileId,

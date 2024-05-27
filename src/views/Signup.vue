@@ -37,8 +37,9 @@
 import { ref } from 'vue'
 import { useUserStore } from '../stores/userStore.ts'
 import { useToast } from 'vue-toastification'
-import router from '../router/index.ts';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 const toast = useToast()
 const form = ref({
@@ -64,7 +65,9 @@ const signup = () => {
       password: '',
       confirmPassword: '',
       birth_date: '',
+      color: '',
     }
+    router.push('/login')
   }).catch(err => {
     if (err.response.status === 400) {toast.warning(err.response.data.errors[0])}
     else {toast.error(err.response.data.message)}

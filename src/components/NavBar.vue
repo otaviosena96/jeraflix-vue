@@ -1,11 +1,9 @@
 <template>
   <div class="page-header-wrapper">
-    <el-menu
-      :default-active="activeIndex"
+    <el-menu      
       mode="horizontal"
       @select="handleSelect"
-      :ellipsis="false"
-      v-if="showMenu"      
+      :ellipsis="false"     
     >           
       <el-menu-item index="1">Filmes Sugeridos</el-menu-item>
       <el-menu-item index="2">Lista de Desejos</el-menu-item>
@@ -25,32 +23,6 @@ const router = useRouter();
 const profileStore = useProfileStore();
 const movieStore = useMovieStore();
 const userStore = useUserStore();
-const activeIndex = ref(profileStore.profile?.id?.toString() || '2');
-const showMenu = ref(true);
-
-const profiles = computed(() => profileStore.profiles);
-const profile = computed(() => profileStore.profile);
-
-watch(() => userStore.path, (newPath, oldPath) => {
-  if (newPath === '/login' || newPath === '/signup' || newPath === '/profile/create') {
-    showMenu.value = false;
-  } else {
-    showMenu.value = true;
-  }
-});
-
-watch(() => profileStore.profile, (newProfile) => {
-  if (newProfile && newProfile.id) {
-    activeIndex.value = newProfile.id.toString();
-  }
-});
-
-const setProfile = (profileId) => {
-  const selectedProfile = profiles.value.find(profile => profile.id === profileId);  
-    profileStore.profile = selectedProfile;
-};
-
-
 
 const handleSelect = (index) => { 
   

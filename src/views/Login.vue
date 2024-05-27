@@ -54,8 +54,8 @@ const signup = async () => {
   router.push({path: '/signup'})
 }
 const login = async () => {
-  await userStore.login(form.value).then(() =>{    
-      router.push('perfil/criar');  
+  await userStore.login(form.value).then(() => {    
+      router.push('/home');  
   }).catch(e => {    
     toast.error(e.response.data.message)
   })
