@@ -50,7 +50,7 @@ import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification'
 
 const route = useRoute();
-const page = ref(1)
+
 
 const storeProfile = useProfileStore();
 const storeMovie = useMovieStore();
