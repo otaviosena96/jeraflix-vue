@@ -2,8 +2,18 @@ import { defineStore } from 'pinia'
 import http from '../services/http'
 import { ref } from 'vue'
 
+interface IMovies {
+  movies: any[]
+  total_pages: number
+  total_results: number
+}
+
 export const useMovieStore = defineStore('movie', () => {
-  const movies = ref<any[]>([])
+  const movies = ref<IMovies>({
+    movies: [],
+    total_pages: 0,
+    total_results: 0,
+  })
   const wishlist = ref<any[]>([])
 
   async function suggestedMovieWithoutGenre(payload: any) {

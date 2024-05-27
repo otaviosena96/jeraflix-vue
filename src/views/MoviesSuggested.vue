@@ -5,7 +5,7 @@
       <div class="loading-spinner"></div>
     </div>
     <div v-else class="col-md-12 teste">
-      <el-card v-for="(movie, index) in movies" :key="index" class="card-movie">
+      <el-card v-for="(movie, index) in movies.movies" :key="index" class="card-movie">
         <el-tooltip effect="dark" :content="movie.title" placement="top">
           <span class="movie-name">{{ truncate(movie.title, 25) }}</span>
         </el-tooltip>
@@ -31,9 +31,9 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-size="page"
+        :page-size="pageSize"
         layout="total, prev, pager, next"
-        :total="movies.length"
+        :total="movies.total_results"   
       />
     </div>
     </div>
@@ -51,6 +51,7 @@ import { useToast } from 'vue-toastification'
 
 const route = useRoute();
 const page = ref(1)
+
 const storeProfile = useProfileStore();
 const storeMovie = useMovieStore();
 const isLoading = ref(false);
@@ -75,7 +76,7 @@ const truncate = (text: string, length: number) => {
 };
 
 const addToFavorites = (index: number) => {
-    const movie = movies.value[index];
+    const movie = movies.value.movies[index];
     const payload = {
       tmdbId: movie.id,
       genre_tmdb_id: movie.genre_ids[0],
@@ -93,7 +94,7 @@ const addToFavorites = (index: number) => {
 };
 
 const addToWatched = (index: number) => {
-    console.log(movies.value[index]);
+    console.log(movies.value.movies[index]);
 
 };
 
@@ -108,7 +109,7 @@ const fetchMovies = () => {
     .then(() => {     
       if (isLoading.value === true) {
         isLoading.value = false;
-        toast.success('Filmes encontrados com sucesso!');
+       
       }
     })
     .catch((error) => {
