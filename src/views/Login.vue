@@ -19,13 +19,22 @@
     </el-button>
   </div>
 
+<!--   <facebook-login
+    :appId="appId"
+    @loggedIn="handleLogin"
+    
+  >
+  </facebook-login> -->
+
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {ref} from 'vue'
 import {useUserStore} from '../stores/userStore.ts'
 import {useToast} from 'vue-toastification'
 import {useRouter} from 'vue-router'
+
+//const appId = '803687398374055'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -36,6 +45,11 @@ const form = ref({
 })
 
 
+
+/* const handleLogin = async () => {
+  console.log()
+}
+ */
 const signup = async () => {
   router.push({path: '/signup'})
 }

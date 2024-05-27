@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, reactive } from 'vue';
+import { defineEmits, reactive } from 'vue';
 import { useProfileStore } from '../../stores/profileStore';
 import { useToast } from 'vue-toastification'
 

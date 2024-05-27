@@ -3,7 +3,7 @@ import http from '../services/http'
 import { ref } from 'vue'
 
 interface LoginPayload {
-  username: string
+  email: string
   password: string
 }
 

@@ -14,19 +14,20 @@ import '../src/scss/styles.scss'
 import { createPinia } from 'pinia'
 import Toast, { PluginOptions } from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
+//import FacebookLogin from 'vue3-facebook-login'
 
-// Adicione o ícone importado à biblioteca
 library.add(faPlus)
 
 const app = createApp(App)
 const pinia = createPinia()
 app.use(ElementPlus)
 app.component('font-awesome-icon', FontAwesomeIcon)
+//app.component('facebook-login', FacebookLogin)
 app.use(router)
 app.use(pinia)
 
 const options: PluginOptions = {
-  // You can set your default options here
+  timeout: 1700,
 }
 
 app.use(Toast, options)

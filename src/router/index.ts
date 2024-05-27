@@ -2,6 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 import CreateProfile from '../views/CreateProfile.vue'
+import Home from '../views/Home.vue'
+import MoviesSuggested from '../views/MoviesSuggested.vue'
+import Wishlist from '../views/Wishlist.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,7 +22,21 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Criar Perfil',
     component: CreateProfile,
   },
-  // Adicione outras rotas aqui conforme necessário
+  {
+    path: '/home',
+    name: 'Home',
+    component: Home,
+  },
+  {
+    path: '/filmes/sugeridos/:id',
+    name: 'Filmes Sugeridos',
+    component: MoviesSuggested,
+  },
+  {
+    path: '/filmes/wishlist/:id',
+    name: 'Lista de Desejos',
+    component: Wishlist,
+  },
 ]
 
 const router = createRouter({
@@ -27,7 +44,6 @@ const router = createRouter({
   routes,
 })
 
-// Guardião de rota global
 router.beforeEach((to, _from, next) => {
   const publicPages = ['/login', '/signup']
   const authRequired = !publicPages.includes(to.path)
