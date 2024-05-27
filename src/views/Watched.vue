@@ -5,7 +5,7 @@
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
     </div>
-    <div class="col-md-12 teste">
+    <div class="col-md-12 card">
       <el-card v-for="(movie, index) in watched.wishlist" :key="index" class="card-movie">
         <el-tooltip effect="dark" :content="movie.title" placement="top">
           <span class="movie-name">{{ truncate(movie.title, 25) }}</span>
@@ -70,7 +70,7 @@ const handleCurrentChange = (val) => {
   page.value = val;
 };
 
-// Função para truncar o nome do filme se for muito longo
+
 const truncate = (text, length) => {
   if (text.length > length) {
     return text.slice(0, length) + '...';
@@ -145,7 +145,7 @@ const removeFromFavorites = (movie) => {
 
 
 const getWatched = async () => {  
-  isLoading.value = true; // Ativar o loading
+  isLoading.value = true; 
  
   try {
     const payload = {
@@ -160,10 +160,10 @@ const getWatched = async () => {
       title: 'Erro!',
       message: 'Erro ao buscar filmes. Por favor, tente novamente mais tarde.',
       type: 'error',
-      duration: 5000 // Duração da notificação em milissegundos
+      duration: 5000
     });
   } finally {
-    isLoading.value = false; // Desativar o loading
+    isLoading.value = false; 
   }
 }
 
@@ -178,21 +178,16 @@ watch([page], getWatched);
 
 
 <style>
-  .teste {
+  .card {
     position: fixed;
     top: 15rem;
     left: 0;
-    height: 80vh; /* Ajuste a altura máxima conforme necessário */
+    height: 75vh;
     width: 100vw;
     background-color: rgb(161, 166, 170);
-    overflow-y: auto; /* Adicione uma barra de rolagem vertical quando necessário */
-    padding: 1rem; /* Adicione algum espaço interno para evitar que os filmes toquem nas bordas */
+    overflow-y: auto; 
+    padding: 1rem; 
   }
-
-  .warning{
-    margin-top: 18rem;
-  }
-
 
 
   .card-movie {
@@ -204,7 +199,7 @@ watch([page], getWatched);
     padding: 1rem; 
     border-radius: 0.5rem; 
     overflow: hidden;
-    position: relative; /* Adicionando posição relativa para o tooltip */
+    position: relative; 
   }
 
   .card-movie .movie-name {
@@ -223,30 +218,30 @@ watch([page], getWatched);
   }
 
   .actions {   
-    display: flex; /* Flexbox para alinhar os botões verticalmente */
-    flex-direction: column; /* Alinhar os botões um embaixo do outro */
-    align-items: center; /* Centralizar os botões horizontalmente */
-    justify-content: center; /* Centralizar os botões verticalmente */
-    margin-top: 4rem; /* Adicionar espaço entre os botões e o conteúdo */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    margin-top: 4rem; 
     
   }
 
   .row {
   display: flex;
-  flex-wrap: wrap; /* Permitir que os elementos filhos fluam em várias linhas */
-  margin-right: -15px; /* Corrigir o espaçamento negativo */
-  margin-left: -15px; /* Corrigir o espaçamento negativo */
+  flex-wrap: wrap; 
+  margin-right: -15px;
+  margin-left: -15px; 
 
 }
 
 .pagination-container {
   position: fixed;
-  top: 11rem; /* Posicione a paginação onde desejar */
+  top: 11rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999; /* Certifique-se de que a paginação esteja acima de outros elementos */
-  background-color: white; /* Adicione um fundo para a paginação, se necessário */
-  padding: 0.5rem 1rem; /* Adicione algum espaçamento interno para a paginação */
+  z-index: 999; 
+  background-color: white;
+  padding: 0.5rem 1rem; 
 }
 
 
@@ -260,17 +255,17 @@ watch([page], getWatched);
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
-    z-index: 9999; /* Garantir que esteja acima de outros elementos */
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
   }
 
   .loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1); /* Cor e espessura da borda */
-    border-top: 4px solid #3498db; /* Cor da borda superior (spinner) */
-    border-radius: 50%; /* Forma do spinner */
-    width: 50px; /* Tamanho do spinner */
-    height: 50px; /* Tamanho do spinner */
-    animation: spin 1s linear infinite; /* Animação do spinner */
+    border: 4px solid rgba(0, 0, 0, 0.1); 
+    border-top: 4px solid #3498db; 
+    border-radius: 50%; 
+    width: 50px; 
+    height: 50px;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
