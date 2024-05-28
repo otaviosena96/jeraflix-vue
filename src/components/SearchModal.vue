@@ -9,7 +9,7 @@
       </header>
       <div class="card-container">
         <el-card v-for="(movie, index) in movies.results" :key="index" class="card-movie">
-          <el-tooltip effect="dark" :content="movie.title" placement="top">
+          <el-tooltip effect="dark" :content="movie.title" placement="top" :append-to="$refs.modalRef">
             <span class="movie-name">{{ truncate(movie.title, 25) }}</span>
           </el-tooltip>
           <div class="actions">
@@ -19,14 +19,17 @@
               </el-tooltip>
             </div>
             <div class="button-container">
-              <el-button v-if="!movie.favorite" @click="addToFavorites(movie)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
+              <el-button  @click="addToFavorites(movie)" type="success" class="button" style="text-align: center; padding: 0.5rem;">QUERO VER +</el-button>
+            </div>
+            <div class="button-container">
+              <el-button  @click="addToWatched(movie)" type="success" class="button" style="text-align: center; padding: 0.5rem;">JÁ ASSISTI +</el-button>
             </div>
           </div>
         </el-card>
       </div>
       <footer class="modal-footer">
         <el-pagination
-          @current-change="handlePagination"
+          @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-size="pageSize"
           :total="totalMovies"
@@ -41,32 +44,41 @@
 import { ref, watch } from 'vue'
 import { useDefaultStore } from '../stores/defaultStore'
 import { useMovieStore } from '../stores/moviesStore'
-import { ElInput, ElButton, ElCard, ElPagination } from 'element-plus'
-
+import { useRouter} from 'vue-router'
+import { useToast } from 'vue-toastification'
+ 
 const defaultStore = useDefaultStore()
-const movieStore = useMovieStore()
-
+const toast = useToast()
+const storeMovie = useMovieStore()
+const router = useRouter()
+const profileId = router.currentRoute.value.params.id;   
 const isModalOpen = ref(defaultStore.modalOpen)
 const searchQuery = ref('')
-const movies = ref({ results: [] })
+const movies = ref({ results: [], total_pages: 0, total_results: 0 })
+
+
 
 const page = ref(1)
 const currentPage = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(20)
 const totalMovies = ref(0)
+
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val;
+  fetchMovies();
+};
 
 const fetchMovies = async () => {
   const params = {
     page: currentPage.value,
     query: searchQuery.value
   }
-  const { results, total_pages } = await movieStore.searchMovies(params)
+  const { results, total_pages } = await storeMovie.searchMovies(params)
   movies.value = { results }
   totalMovies.value = total_pages
 }
 
-const searchMovies = () => {
-  currentPage.value = 1
+const searchMovies = () => {  
   fetchMovies()
 }
 
@@ -74,9 +86,42 @@ const closeModal = () => {
   defaultStore.modalOpen = false
 }
 
+
+
 const addToFavorites = async (movie) => {
-  // Lógica para adicionar aos favoritos
+  
+    const payload = {
+      tmdbId: movie.id,
+      genre_id: movie.genre_ids[0],
+      profile_id: Number(router.currentRoute.value.params.id),
+      favorite: true,     
+      title: movie.title, 
+      overview: movie.overview,  
+    }
+    storeMovie.addToFavoriteDirect(payload).then(() => {
+      toast.success('Filme adicionado aos favoritos com sucesso!', );
+    }).catch((err: any) => {
+      toast.error(err.response.data.message);
+    })
+
 }
+
+const addToWatched = async (movie) => {     
+     const payload = {
+       tmdbId: movie.id,
+       genre_id: movie.genre_ids[0],
+       profile_id: Number(router.currentRoute.value.params.id),
+       watched: true,     
+       title: movie.title, 
+       overview: movie.overview,  
+     }
+     storeMovie.addToWatchedDirect(payload).then(() => {
+       toast.success('Filme adicionado aos assisitos com sucesso!', );
+     }).catch((err: any) => {
+       toast.error(err.response.data.message);
+     })
+ 
+ }
 
 const truncate = (text: string, length: number) => {
   if (text.length > length) {
@@ -88,9 +133,15 @@ const truncate = (text: string, length: number) => {
 watch(() => defaultStore.modalOpen, (newValue) => {
   isModalOpen.value = newValue
 })
+
+watch([currentPage, pageSize], fetchMovies);
 </script>
 
 <style scoped>
+
+.button-container {
+  margin-top: 1rem; 
+}
 .backdrop {
   position: fixed;
   top: 0;

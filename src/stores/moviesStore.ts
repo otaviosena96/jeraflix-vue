@@ -57,6 +57,16 @@ export const useMovieStore = defineStore('movie', () => {
     return data.data
   }
 
+  async function addToFavoriteDirect(payload: any) {
+    const { data } = await http.post(`movies/add-favorite-direct`, payload)
+    return data
+  }
+
+  async function addToWatchedDirect(payload: any) {
+    const { data } = await http.post(`movies/add-watched-direct`, payload)
+    return data
+  }
+
   return {
     movies,
     wishlist,
@@ -68,5 +78,7 @@ export const useMovieStore = defineStore('movie', () => {
     getWatched,
     addToWatched,
     searchMovies,
+    addToFavoriteDirect,
+    addToWatchedDirect,
   }
 })
