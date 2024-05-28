@@ -14,11 +14,12 @@ export const useMovieStore = defineStore('movie', () => {
     total_pages: 0,
     total_results: 0,
   })
+  const allMovies = ref({})
   const wishlist = ref<any[]>([])
   const watched = ref<any[]>([])
 
   async function suggestedMovieWithoutGenre(payload: any) {
-    const { data } = await http.get(`movies/search-movies-suggested`, {
+    const { data } = await http.get(`movies/search-suggested`, {
       params: payload,
     })
     movies.value = data.data
@@ -49,14 +50,23 @@ export const useMovieStore = defineStore('movie', () => {
     return data
   }
 
+  async function searchMovies(payload: any) {
+    const { data } = await http.get(`movies/search`, {
+      params: payload,
+    })
+    return data.data
+  }
+
   return {
     movies,
     wishlist,
     watched,
     suggestedMovieWithoutGenre,
+    allMovies,
     addToFavorite,
     getWishlist,
     getWatched,
     addToWatched,
+    searchMovies,
   }
 })

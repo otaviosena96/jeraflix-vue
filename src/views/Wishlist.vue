@@ -47,7 +47,6 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useMovieStore } from '../stores/moviesStore';
 import { useProfileStore } from '../stores/profileStore';
-import { userDefaultStore } from '../stores/defaultStore';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import NavBar from '../components/NavBar.vue';
@@ -61,11 +60,11 @@ const page = ref(1)
 const pageSize = ref(20);
 const storeProfile = useProfileStore();
 const storeMovie = useMovieStore();
-const storeDefault = userDefaultStore();
+
 
 const wishlist = computed(() => storeMovie.wishlist)
 const profile = computed(() => storeProfile.profile);
-const filtered = computed(() => storeDefault.filtered);
+
 
 
 const handleCurrentChange = (val) => {

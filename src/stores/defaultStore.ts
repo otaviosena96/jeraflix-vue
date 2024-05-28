@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const userDefaultStore = defineStore('default', () => {
+export const useDefaultStore = defineStore('default', () => {
   const filtered = ref<boolean>(false)
+  const modalOpen = ref(false)
 
   return {
     filtered,
+    modalOpen,
   }
 })

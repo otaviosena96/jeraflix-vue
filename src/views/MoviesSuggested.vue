@@ -2,6 +2,7 @@
   <div class="row">
     <SelectProfile></SelectProfile>
     <NavBar></NavBar>
+    <SearchButton></SearchButton>
     <div v-if="isLoading" class="loading-container">     
       <div class="loading-spinner"></div>
     </div>
@@ -37,7 +38,7 @@
           :total="movies.total_results"   
       />
     </div>
-  </div>
+    </div>
 
   
   </div>
@@ -51,6 +52,7 @@ import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification'
 import SelectProfile from '../components/SelectProfile.vue';
 import NavBar from '../components/NavBar.vue';
+import SearchButton from '../components/SearchButton.vue';
 
 const route = useRoute();
 
@@ -172,7 +174,7 @@ watch([currentPage, pageSize], fetchMovies);
     border-radius: 0.5rem; 
     overflow: hidden;
     position: relative;
-
+  }
   .card-movie .movie-name {
     display: block;
     white-space: nowrap;
@@ -242,5 +244,5 @@ watch([currentPage, pageSize], fetchMovies);
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-}
+
 </style>
